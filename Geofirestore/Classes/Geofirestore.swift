@@ -265,19 +265,19 @@ public class GFSQuery {
         info!.isInQuery = locationIsInQuery(loc: location)
         info!.geoHash = GFGeoHash.new(withLocation: location.coordinate)
         
-        if (isNew || !(wasInQuery ?? false)) && info?.isInQuery != nil {
+        if (isNew || !(wasInQuery ?? false)) && info?.isInQuery == true {
             for (offset: _, element: (key: _, value: block)) in keyEnteredObservers.enumerated() {
                 self.geoFirestore.callbackQueue.async {
                     block(key, info!.location)
                 }
             }
-        } else if !isNew && changedLocation && info?.isInQuery != nil {
+        } else if !isNew && changedLocation && info?.isInQuery == true {
             for (offset: _, element: (key: _, value: block)) in keyMovedObservers.enumerated() {
                 self.geoFirestore.callbackQueue.async {
                     block(key, info!.location)
                 }
             }
-        } else if wasInQuery ?? false && info?.isInQuery == nil {
+        } else if wasInQuery ?? false && info?.isInQuery == false {
             for (offset: _, element: (key: _, value: block)) in keyExitedObservers.enumerated() {
                 self.geoFirestore.callbackQueue.async {
                     block(key, info!.location)
